@@ -1,25 +1,59 @@
-import logo from './logo.svg';
-import './App.css';
+import 'mapbox-gl/dist/mapbox-gl.css';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import Trip from './components/Trip';
+import Splash from './components/Splash';
+import './css/app.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const getData = dataName => {
+  const res = axios.get(`https://raw.githubusercontent.com/SeongJae999/mang0road/main/data/result_data/visual_data/${dataName}.json`);
+  const result = res.then(r => r.data);
+  return result;
 }
+
+const App = () => {
+  const minTime = 420;
+  const maxTime = 540;
+
+  const [time, setTime] = useState(minTime);
+  const [data, setData] = useState({});
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    async function getFetchData() {
+      const resData = {
+        'BRT': await getData('brt'),
+        'BusStop': await getData('bus_stop'),
+        'B1Trip': await getData('busstop_trip'),
+      };
+
+      if (resData) {
+        setData(resData);
+        setLoaded(true);
+      };
+    };
+    getFetchData();
+  }, []);
+
+  return (
+    <div className='container'>
+      {
+        loaded ?
+        <>
+          <Trip
+            data={data}
+            minTime={minTime}
+            maxTime={maxTime}
+            time={time}
+            setTime={setTime}
+            >
+          </Trip>
+        </>
+        :
+        <Splash />
+      }
+      </div>
+  );
+};
 
 export default App;
