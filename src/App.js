@@ -6,7 +6,7 @@ import Splash from './components/Splash';
 import './css/app.css';
 
 const getData = dataName => {
-  const res = axios.get(`https://raw.githubusercontent.com/SeongJae999/mang0road/main/data/result_data/visual_data/${dataName}.json`);
+  const res = axios.get(`https://raw.githubusercontent.com/SeongJae999/mang0road_simulation/master/src/data/${dataName}.json`);
   const result = res.then(r => r.data);
   return result;
 }
